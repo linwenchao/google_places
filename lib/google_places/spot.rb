@@ -264,7 +264,7 @@ module GooglePlaces
       @cid                        = json_result_object['url'].to_i
       @website                    = json_result_object['website']
       @reviews                    = reviews_component(json_result_object['reviews'])
-      @photos                     = photos_comment(json_result_object["photos"])
+      @photos                     = photos_component(json_result_object["photos"])
     end
 
     def address_component(address_component_type, address_component_length)
