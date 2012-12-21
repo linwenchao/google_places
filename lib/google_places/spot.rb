@@ -2,7 +2,7 @@ require 'google_places/review'
 
 module GooglePlaces
   class Spot
-    attr_accessor :lat, :lng, :name, :icon, :reference, :vicinity, :types, :id, :formatted_phone_number, :international_phone_number, :formatted_address, :address_components, :street_number, :street, :city, :region, :postal_code, :country, :rating, :url, :cid, :website, :reviews
+    attr_accessor :lat, :lng, :name, :icon, :reference, :vicinity, :types, :id, :formatted_phone_number, :international_phone_number, :formatted_address, :address_components, :street_number, :street, :district, :city, :region, :postal_code, :country, :rating, :url, :cid, :website, :reviews, :photos
 
     # Search for Spots at the provided location
     #
@@ -254,6 +254,7 @@ module GooglePlaces
       @address_components         = json_result_object['address_components']
       @street_number              = address_component(:street_number, 'short_name')
       @street                     = address_component(:route, 'long_name')
+      @district                   = address_component(:sublocality, 'long_name')
       @city                       = address_component(:locality, 'long_name')
       @region                     = address_component(:administrative_area_level_1, 'long_name')
       @postal_code                = address_component(:postal_code, 'long_name')
@@ -263,6 +264,7 @@ module GooglePlaces
       @cid                        = json_result_object['url'].to_i
       @website                    = json_result_object['website']
       @reviews                    = reviews_component(json_result_object['reviews'])
+      @photos                     = photos_comment(json_result_object["photos"])
     end
 
     def address_component(address_component_type, address_component_length)
@@ -285,6 +287,20 @@ module GooglePlaces
               r['author_url'],
               r['text'],
               r['time'].to_i
+          )
+        }
+      else []
+      end
+    end
+
+    def photos_component(json_reviews)
+      if json_reviews
+        json_reviews.map { |r|
+          Photo.new(
+              r['height'].to_i,
+              r['html_attributions'],
+              r['photo_reference'],
+              r['width'].to_i
           )
         }
       else []
