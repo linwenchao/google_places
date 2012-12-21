@@ -1,4 +1,5 @@
 require 'google_places/review'
+require 'google_places/photo'
 
 module GooglePlaces
   class Spot
